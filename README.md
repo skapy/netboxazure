@@ -2,7 +2,7 @@
 
 **Azure Netbox**
 
-[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fskapy%2Fnetboxazure%2Fmaster%2Fazuredeploy.json)
+[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fskapy%2Fnetboxazure%2Fmaster%2Ftemplate.json)
 [![Visualize](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fskapy%2Fnetboxazure%2Fmaster%2Fazuredeploy.json)
 
 This template allows you to deploy an Netbox VM using the template installation method. It creates an CentOS 7 VM, does a silent install of Netbox using a modified version of oficial provided documentation ( https://netbox.readthedocs.io/en/stable/ ).
