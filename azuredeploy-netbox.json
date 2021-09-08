@@ -232,9 +232,9 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "MicrosoftWindowsServer",
-            "offer": "WindowsServer",
-            "sku": "[parameters('OSVersion')]",
+            "publisher": "OpenLogic",
+            "offer": "CentOS",
+            "sku": "7.5",
             "version": "latest"
           },
           "osDisk": {
