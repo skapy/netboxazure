@@ -33,7 +33,7 @@ sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/data/Environment=PGDATA=\/opt\/p
 
 systemctl daemon-reload >> $LOGFILE 2>>$LOGFILE
 systemctl start postgresql.service >> $LOGFILE 2>>$LOGFILE
-initdb -D /opt/postgresql/data >> $LOGFILE 2>>$LOGFILE
+sudo -u postgres initdb -D /opt/postgresql/data >> $LOGFILE 2>>$LOGFILE
 systemctl restart postgresql.service >> $LOGFILE 2>>$LOGFILE
 sleep 5
 
@@ -83,7 +83,7 @@ sudo chown --recursive netbox /opt/netbox/netbox/media/
 sudo sh -c "echo 'napalm' >> /opt/netbox/local_requirements.txt"
 sudo sh -c "echo 'django-storages' >> /opt/netbox/local_requirements.txt"
 
-. /etc/profile 
+/etc/profile 
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
