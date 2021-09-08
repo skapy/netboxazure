@@ -1,180 +1,231 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "location": {
-            "type": "string"
-        },
-        "networkInterfaceName": {
-            "type": "string"
-        },
-        "networkSecurityGroupName": {
-            "type": "string"
-        },
-        "networkSecurityGroupRules": {
-            "type": "array"
-        },
-        "subnetName": {
-            "type": "string"
-        },
-        "virtualNetworkName": {
-            "type": "string"
-        },
-        "addressPrefixes": {
-            "type": "array"
-        },
-        "subnets": {
-            "type": "array"
-        },
-        "publicIpAddressName": {
-            "type": "string"
-        },
-        "publicIpAddressType": {
-            "type": "string"
-        },
-        "publicIpAddressSku": {
-            "type": "string"
-        },
-        "virtualMachineName": {
-            "type": "string"
-        },
-        "virtualMachineComputerName": {
-            "type": "string"
-        },
-        "virtualMachineRG": {
-            "type": "string"
-        },
-        "osDiskType": {
-            "type": "string"
-        },
-        "virtualMachineSize": {
-            "type": "string"
-        },
-        "adminUsername": {
-            "type": "string"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualMachineSize": {
+      "type": "string",
+      "defaultValue": "Standard_B2s",      
+      "metadata": {
+        "description": "VM size, please choose a size ."
+      }
     },
-    "variables": {
-        "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]",
-        "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
+    "virtualMachineName": {
+      "type": "string",
+      "metadata": {
+        "description": "OPN NVA Manchine Name"
+      }
     },
-    "resources": [
-        {
-            "name": "[parameters('networkInterfaceName')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2018-10-01",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
-                "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
-                "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            },
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIpAddress": {
-                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
-                            }
-                        }
-                    }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[variables('nsgId')]"
-                }
-            }
-        },
-        {
-            "name": "[parameters('networkSecurityGroupName')]",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2019-02-01",
-            "location": "[parameters('location')]",
-            "properties": {
-                "securityRules": "[parameters('networkSecurityGroupRules')]"
-            }
-        },
-        {
-            "name": "[parameters('virtualNetworkName')]",
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2020-11-01",
-            "location": "[parameters('location')]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": "[parameters('addressPrefixes')]"
-                },
-                "subnets": "[parameters('subnets')]"
-            }
-        },
-        {
-            "name": "[parameters('publicIpAddressName')]",
-            "type": "Microsoft.Network/publicIpAddresses",
-            "apiVersion": "2019-02-01",
-            "location": "[parameters('location')]",
-            "properties": {
-                "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
-            },
-            "sku": {
-                "name": "[parameters('publicIpAddressSku')]"
-            }
-        },
-        {
-            "name": "[parameters('virtualMachineName')]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2021-03-01",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]"
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "[parameters('virtualMachineSize')]"
-                },
-                "storageProfile": {
-                    "osDisk": {
-                        "createOption": "fromImage",
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('osDiskType')]"
-                        }
-                    },
-                    "imageReference": {
-                        "publisher": "OpenLogic",
-                        "offer": "CentOS",
-                        "sku": "7_9-gen2",
-                        "version": "latest"
-                    }
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]"
-                        }
-                    ]
-                },
-                "osProfile": {
-                    "computerName": "[parameters('virtualMachineComputerName')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": true
-                    }
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true
-                    }
-                }
-            }
-        }
-    ],
-    "outputs": {
-        "adminUsername": {
-            "type": "string",
-            "value": "[parameters('adminUsername')]"
-        }
+    "TempUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Default Temporary Admin username (Only used to deploy)"
+      }
+    },
+    "TempPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Default Temporary Admin password (Only used to deploy)"
+      }
+    },
+    "existingVirtualNetworkName": {
+    "type": "string",
+    "metadata": {
+      "description": "Existing Virtual Nework Name"
+      }
+   },
+    "existingSubnetName": {
+      "type": "string",
+      "metadata": {
+       "description": "Type Existing Subnet Name"
+       }
+    },
+    "PublicIPAddressSku": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Specify Public IP SKU either Basic (lowest cost) or Standard (Required for HA LB)"
+      }
+    },
+    "OpnScriptURI": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/skapy/opnazure/master/scripts/",
+            "metadata": {
+      "description": "URI for Custom OPN Script and Config"
+      }
+    },
+    "ShellScriptName": {
+      "type": "string",
+      "defaultValue": "configureopnsense-snic.sh",
+            "metadata": {
+      "description": "Shell Script to be executed"
+      }
+    },
+    "OPNConfigFile": {
+      "type": "string",
+      "defaultValue": "config-snic.xml",
+            "metadata": {
+      "description": "OPNSense XML Config File"
+      }
     }
+  },
+  "variables": {
+     "extensionName":"CustomScript",
+     "nic": "[concat(parameters('virtualMachineName'),'-NIC')]",
+     "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('existingVirtualNetworkName'), parameters('existingSubnetName'))]",
+     "publicIPAddressName": "[concat(parameters('virtualMachineName'),'-PublicIP')]",
+     "networkSecurityGroupName": "[concat(parameters('virtualMachineName'),'-NSG')]",
+     "location": "[resourceGroup().location]"
+  },
+  "resources": [
+    {
+      "name": "[parameters('virtualMachineName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2017-03-30",
+      "location": "[variables('location')]",
+      "comments": "This is the virtual machine that you're building.",
+      "dependsOn": [
+        "[variables('nic')]"
+      ],
+      "properties": {
+        "osProfile": {
+          "computerName": "[parameters('virtualMachineName')]",
+          "adminUsername": "[parameters('TempUsername')]",
+          "adminPassword": "[parameters('TempPassword')]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[parameters('virtualMachineSize')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "OpenLogic",
+            "offer": "CentOS",
+            "sku": "7_9-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          },
+          "dataDisks": []
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "properties": {
+                "primary": true
+              },
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "[variables('nic')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2017-06-01",
+      "location": "[variables('location')]",
+      "comments": "This will be your Primary NIC",
+      "dependsOn": [
+        "[variables('publicIpAddressName')]",
+        "[variables('networkSecurityGroupName')]"
+      ],        
+      "properties": {
+        "enableIPForwarding": true,
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnet1Ref')]"
+              },
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIpAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
+            }
+          }
+        }
+        ]
+      }
+    },
+    {
+      "name": "[variables('publicIpAddressName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2020-07-01",
+      "location": "[variables('location')]",
+      "comments": "Public IP for your Primary NIC",
+      "sku": {
+        "name": "[parameters('PublicIPAddressSku')]",
+        "tier": "Regional"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "name": "[variables('networkSecurityGroupName')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2016-09-01",
+      "location": "[variables('location')]",
+      "comments": "Network Security Group (NSG) for your Primary NIC",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "default-allow-https",
+            "properties": {
+              "priority": 1000,
+              "sourceAddressPrefix": "*",
+              "protocol": "Tcp",
+              "destinationPortRange": "443",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*"
+            }
+          },
+          {
+            "name": "default-allow-ssh",
+            "properties": {
+            "priority": 1001,
+            "sourceAddressPrefix": "*",
+            "protocol": "Tcp",
+            "destinationPortRange": "22",
+            "access": "Allow",
+            "direction": "Inbound",
+            "sourcePortRange": "*",
+            "destinationAddressPrefix": "*"
+              }  
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('virtualMachineName'), '/', variables('extensionName'))]",
+      "apiVersion": "2015-06-15",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.OSTCExtensions",
+        "type": "CustomScriptForLinux",
+        "typeHandlerVersion": "1.4",
+        "autoUpgradeMinorVersion": false,
+        "settings": {
+          "fileUris": [
+            "[concat(parameters('OPNScriptURI'),parameters('ShellScriptName'))]" 
+          ],
+          "commandToExecute": "[concat('sh ',parameters('ShellScriptName'),' ',parameters('OPNConfigFile'))]"
+        }        
+      }
+    }
+  ],
+  "outputs": {}
 }
