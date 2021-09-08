@@ -4,9 +4,9 @@
   "parameters": {
     "virtualMachineSize": {
       "type": "string",
-      "defaultValue": "Standard_B2s",      
+      "defaultValue": "Standard_B2s",
       "metadata": {
-        "description": "VM size, please choose a size ."
+        "description": "Choose VM size"
       }
     },
     "virtualMachineName": {
@@ -27,17 +27,33 @@
         "description": "Default Temporary Admin password (Only used to deploy)"
       }
     },
-    "existingVirtualNetworkName": {
+   "virtualNetworkName": {
     "type": "string",
+    "defaultValue": "Netbox-VNET",
     "metadata": {
-      "description": "Existing Virtual Nework Name"
+      "description": "Virtual Nework Name"
       }
    },
-    "existingSubnetName": {
+    "VNETAddress": {
       "type": "string",
+      "defaultValue": "10.0.0.0/16",
       "metadata": {
-       "description": "Type Existing Subnet Name"
-       }
+      "description": "Virtual Address Space"
+        }
+    },
+    "OpnsenseSubnetName": {
+      "type": "string",
+      "defaultValue": "NetboxSubnet",
+      "metadata": {
+      "description": "Netbox Subnet Name"
+        }
+    },  
+    "OpnsenseSubnetCIDR": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/24",
+      "metadata": {
+      "description": "Netbox Subnet Address Space"
+        }
     },
     "PublicIPAddressSku": {
       "type": "string",
@@ -68,17 +84,17 @@
       "type": "string",
       "defaultValue": "netbox.xml",
             "metadata": {
-      "description": "Netbox XML Config File"
+      "description": "Netbox Config File"
       }
     }
   },
   "variables": {
-     "extensionName":"CustomScript",
-     "nic": "[concat(parameters('virtualMachineName'),'-NIC')]",
-     "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('existingVirtualNetworkName'), parameters('existingSubnetName'))]",
-     "publicIPAddressName": "[concat(parameters('virtualMachineName'),'-PublicIP')]",
-     "networkSecurityGroupName": "[concat(parameters('virtualMachineName'),'-NSG')]",
-     "location": "[resourceGroup().location]"
+    "extensionName":"CustomScript",
+    "nic": "[concat(parameters('virtualMachineName'),'-NIC')]",
+    "publicIPAddressName": "[concat(parameters('virtualMachineName'),'-PublicIP')]",
+    "subnet2Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('OpnsenseSubnetName'))]",
+    "networkSecurityGroupName": "[concat(parameters('virtualMachineName'),'-NSG')]",
+    "location": "[resourceGroup().location]"
   },
   "resources": [
     {
@@ -124,6 +140,31 @@
       }
     },
     {
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('virtualNetworkName')]",
+      "apiVersion": "2017-06-01",
+      "location": "[variables('location')]",
+      "comments": "This will build a Virtual Network.",
+      "dependsOn": [
+        "[variables('networkSecurityGroupName')]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('VNETAddress')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('OpnsenseSubnetName')]",
+            "properties": {
+              "addressPrefix": "[parameters('OpnsenseSubnetCIDR')]"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "[variables('nic')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2017-06-01",
@@ -131,8 +172,9 @@
       "comments": "This will be your Primary NIC",
       "dependsOn": [
         "[variables('publicIpAddressName')]",
-        "[variables('networkSecurityGroupName')]"
-      ],        
+        "[variables('networkSecurityGroupName')]",
+        "[parameters('virtualNetworkName')]"
+      ],
       "properties": {
         "enableIPForwarding": true,
         "networkSecurityGroup": {
@@ -143,14 +185,14 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[variables('subnet1Ref')]"
+                "id": "[variables('subnet2Ref')]"
               },
               "privateIPAllocationMethod": "Dynamic",
               "publicIpAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
+              }
             }
           }
-        }
         ]
       }
     },
