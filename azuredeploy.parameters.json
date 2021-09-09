@@ -6,13 +6,13 @@
       "value": "Standard_A1_v2"
     },
     "vmResourceName": {
-      "value": "opnsense-vm"
+      "value": "netbox-vm"
     },
     "vmStorageAccountType": {
       "value": "Standard_LRS"
     },
     "networkPrefix": {
-      "value": "opnsense"
+      "value": "netbox"
     },
     "vnetAddressPrefix": {
       "value": "10.50.0.0/16"

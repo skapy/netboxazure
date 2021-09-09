@@ -19,13 +19,15 @@ source /opt/rh/rh-python38/enable
 #installation
 yum install -y postgresql postgresql-server
 
-semanage fcontext -a -t postgresql_db_t "/opt/postgresql(/.*)?"
-
 systemctl enable postgresql
 
 mkdir /opt/postgresql
 mkdir /opt/postgresql/data
 chown -R postgres:postgres /opt/postgresql
+# selinux upddate for new postgresql location 
+semanage fcontext -a -t postgresql_db_t "/opt/postgresql(/.*)?"
+chcon -Rt postgresql_db_t /opt/postgresql/data
+firewall-cmd --add-service=postgresql --pernament
 
 sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql.service
 
@@ -34,6 +36,7 @@ sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/data/Environment=PGDATA=\/opt\/p
 systemctl daemon-reload >> $LOGFILE 2>>$LOGFILE
 systemctl start postgresql.service >> $LOGFILE 2>>$LOGFILE
 sudo -u postgres initdb -D /opt/postgresql/data >> $LOGFILE 2>>$LOGFILE
+# postgresql-setup --initdb
 systemctl restart postgresql.service >> $LOGFILE 2>>$LOGFILE
 sleep 5
 
