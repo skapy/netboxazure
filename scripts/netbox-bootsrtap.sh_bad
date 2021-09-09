@@ -1,13 +1,21 @@
 # TODO: add custom script
 VERSION="$1"
+PYTHONV=python36
 LOGFILE=/var/log/netbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 
 # install from SCLo repos
-yum install python3 -y >> $LOGFILE 2>>$LOGFILE
+yum install centos-release-scl wget -y >> $LOGFILE 2>>$LOGFILE
 
-yum install pip3 -y  >> $LOGFILE 2>>$LOGFILE
+# install Python 3.8 from SCLo
+yum --enablerepo=centos-sclo-rh -y install rh-$PYTHONV >> $LOGFILE 2>>$LOGFILE
 
+echo "source /opt/rh/rh-$PYTHONV/enable" > /etc/profile.d/$PYTHONV.sh
+echo "export X_SCLS=\"\`scl enable rh-$PYTHONV 'echo \$X_SCLS'\`\"" >> /etc/profile.d/$PYTHONV.sh
+
+# or run "
+
+source /opt/rh/rh-$PYTHONV/enable
 
 
 #installation
@@ -82,11 +90,11 @@ sudo sh -c "echo 'napalm' >> /opt/netbox/local_requirements.txt"
 
 pip3 install -r /opt/netbox-$$VERSION/requirements.txt --upgrade >> $LOGFILE 2>>$LOGFILE
 
-python3 -c "import sys; print('\n'.join(sys.path))" >> $LOGFILE 2>>$LOGFILE
+python -c "import sys; print('\n'.join(sys.path))"
 
 # . /etc/profile 
-# . /etc/profile.d/$PYTHONV.sh
-# sed -i "s/python3/\/opt\/rh\/rh-$PYTHONV\/root\/usr\/bin\/python3/1" /opt/netbox/upgrade.sh
+. /etc/profile.d/$PYTHONV.sh
+sed -i "s/python3/\/opt\/rh\/rh-$PYTHONV\/root\/usr\/bin\/python3/1" /opt/netbox/upgrade.sh
 
 spleep 5
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
