@@ -1,5 +1,6 @@
 # TODO: add custom script
-VERSION="3.0.1"
+VERSION="$1"
+echo "$1"
 LOGFILE=/var/log/nexbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 

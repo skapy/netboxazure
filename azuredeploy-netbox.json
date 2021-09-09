@@ -80,13 +80,6 @@
       "description": "Shell Script to be executed"
       }
     },
-    "NetboxConfigFile": {
-      "type": "string",
-      "defaultValue": "netbox.xml",
-            "metadata": {
-      "description": "Netbox Config File"
-      }
-    },
     "NetboxBuildVersion": {
       "type": "string",
       "defaultValue": "3.0.1",
@@ -271,7 +264,7 @@
           "fileUris": [
             "[concat(parameters('NetboxScriptURI'),parameters('ShellScriptName'))]" 
           ],
-          "commandToExecute": "[concat('sh ',parameters('ShellScriptName'),' ',parameters('NetboxConfigFile'))]"
+          "commandToExecute": "[concat('sh ',parameters('ShellScriptName'),' ',parameters('NetboxBuildVersion'))]"
         }        
       }
     }
