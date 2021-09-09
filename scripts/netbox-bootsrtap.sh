@@ -15,7 +15,7 @@ echo "export X_SCLS=\"\`scl enable rh-$PYTHONV 'echo \$X_SCLS'\`\"" >> /etc/prof
 
 # or run "
 
-source /opt/rh/rh-python38/enable
+source /opt/rh/rh-$PYTHONV/enable
 
 
 #installation
