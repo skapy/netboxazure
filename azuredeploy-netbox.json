@@ -18,6 +18,7 @@
     },
     "TempUsername": {
       "type": "string",
+      "defaultValue": "azureuser",
       "metadata": {
         "description": "Default Temporary Admin username (Only used to deploy)"
       }
@@ -83,7 +84,7 @@
     },
     "BuildVersion": {
       "type": "string",
-      "defaultValue": "3.0.1",
+      "defaultValue": "2.11.9",
             "metadata": {
       "description": "Netbox Build Version"
       }

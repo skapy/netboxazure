@@ -86,11 +86,16 @@ sudo chown --recursive netbox /opt/netbox/netbox/media/
 # install
 
 sudo sh -c "echo 'napalm' >> /opt/netbox/local_requirements.txt"
-sudo sh -c "echo 'django-storages' >> /opt/netbox/local_requirements.txt"
+# sudo sh -c "echo 'django-storages' >> /opt/netbox/local_requirements.txt"
+
+pip3 install -r /opt/netbox-2.11.9/requirements.txt --upgrade >> $LOGFILE 2>>$LOGFILE
+
 
 # . /etc/profile 
 . /etc/profile.d/python38.sh
 sed -i "s/python3/\/opt\/rh\/rh-python38\/root\/usr\/bin\/python3/1" /opt/netbox/upgrade.sh
+
+spleep 5
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
