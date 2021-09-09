@@ -1,6 +1,6 @@
 # TODO: add custom script
 VERSION="$1"
-echo "$1"
+PYTHONV=python37
 LOGFILE=/var/log/nexbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 
@@ -8,10 +8,10 @@ echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 yum install centos-release-scl wget -y >> $LOGFILE 2>>$LOGFILE
 
 # install Python 3.8 from SCLo
-yum --enablerepo=centos-sclo-rh -y install rh-python38 >> $LOGFILE 2>>$LOGFILE
+yum --enablerepo=centos-sclo-rh -y install rh-$PYTHONV >> $LOGFILE 2>>$LOGFILE
 
-echo "source /opt/rh/rh-python38/enable" > /etc/profile.d/python38.sh
-echo "export X_SCLS=\"\`scl enable rh-python38 'echo \$X_SCLS'\`\"" >> /etc/profile.d/python38.sh
+echo "source /opt/rh/rh-python38/enable" > /etc/profile.d/$PYTHONV.sh
+echo "export X_SCLS=\"\`scl enable rh-python38 'echo \$X_SCLS'\`\"" >> /etc/profile.d/$PYTHONV.sh
 
 # or run "
 
@@ -88,12 +88,13 @@ sudo chown --recursive netbox /opt/netbox/netbox/media/
 sudo sh -c "echo 'napalm' >> /opt/netbox/local_requirements.txt"
 # sudo sh -c "echo 'django-storages' >> /opt/netbox/local_requirements.txt"
 
-pip3 install -r /opt/netbox-2.11.9/requirements.txt --upgrade >> $LOGFILE 2>>$LOGFILE
+pip3 install -r /opt/netbox-$$VERSION/requirements.txt --upgrade >> $LOGFILE 2>>$LOGFILE
 
+python -c "import sys; print('\n'.join(sys.path))"
 
 # . /etc/profile 
-. /etc/profile.d/python38.sh
-sed -i "s/python3/\/opt\/rh\/rh-python38\/root\/usr\/bin\/python3/1" /opt/netbox/upgrade.sh
+. /etc/profile.d/$PYTHONV.sh
+sed -i "s/python3/\/opt\/rh\/rh-$PYTHONV\/root\/usr\/bin\/python3/1" /opt/netbox/upgrade.sh
 
 spleep 5
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
