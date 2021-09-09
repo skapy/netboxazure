@@ -1,6 +1,6 @@
 # TODO: add custom script
 VERSION="$1"
-PYTHONV=python37
+PYTHONV=python36
 LOGFILE=/var/log/nexbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 
@@ -10,8 +10,8 @@ yum install centos-release-scl wget -y >> $LOGFILE 2>>$LOGFILE
 # install Python 3.8 from SCLo
 yum --enablerepo=centos-sclo-rh -y install rh-$PYTHONV >> $LOGFILE 2>>$LOGFILE
 
-echo "source /opt/rh/rh-python38/enable" > /etc/profile.d/$PYTHONV.sh
-echo "export X_SCLS=\"\`scl enable rh-python38 'echo \$X_SCLS'\`\"" >> /etc/profile.d/$PYTHONV.sh
+echo "source /opt/rh/rh-$PYTHONV/enable" > /etc/profile.d/$PYTHONV.sh
+echo "export X_SCLS=\"\`scl enable rh-$PYTHONV 'echo \$X_SCLS'\`\"" >> /etc/profile.d/$PYTHONV.sh
 
 # or run "
 
