@@ -86,7 +86,8 @@ sudo chown --recursive netbox /opt/netbox/netbox/media/
 sudo sh -c "echo 'napalm' >> /opt/netbox/local_requirements.txt"
 sudo sh -c "echo 'django-storages' >> /opt/netbox/local_requirements.txt"
 
-/etc/profile 
+# . /etc/profile 
+. /etc/profile.d/python38.sh
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
