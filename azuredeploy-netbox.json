@@ -80,11 +80,18 @@
       "description": "Shell Script to be executed"
       }
     },
-    "OPNConfigFile": {
+    "NetboxConfigFile": {
       "type": "string",
       "defaultValue": "netbox.xml",
             "metadata": {
       "description": "Netbox Config File"
+      }
+    },
+    "NetboxBuildVersion": {
+      "type": "string",
+      "defaultValue": "3.0.1",
+            "metadata": {
+      "description": "Netbox Build Version"
       }
     }
   },
@@ -262,9 +269,9 @@
         "autoUpgradeMinorVersion": false,
         "settings": {
           "fileUris": [
-            "[concat(parameters('OPNScriptURI'),parameters('ShellScriptName'))]" 
+            "[concat(parameters('NetboxScriptURI'),parameters('ShellScriptName'))]" 
           ],
-          "commandToExecute": "[concat('sh ',parameters('ShellScriptName'),' ',parameters('OPNConfigFile'))]"
+          "commandToExecute": "[concat('sh ',parameters('ShellScriptName'),' ',parameters('NetboxBuildVersion'))]"
         }        
       }
     }

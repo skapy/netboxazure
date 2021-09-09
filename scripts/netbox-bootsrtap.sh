@@ -1,4 +1,5 @@
 # TODO: add custom script
+VERSION="$1"
 LOGFILE=/var/log/nexbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 
@@ -63,9 +64,9 @@ systemctl start redis
 pip install --upgrade pip >> $LOGFILE 2>>$LOGFILE
 
 
-sudo wget https://github.com/netbox-community/netbox/archive/v3.0.1.tar.gz >> $LOGFILE 2>>$LOGFILE
-sudo tar -xzf v3.0.1.tar.gz -C /opt >> $LOGFILE 2>>$LOGFILE
-sudo ln -s /opt/netbox-3.0.1/ /opt/netbox
+sudo wget https://github.com/netbox-community/netbox/archive/v$VERSION.tar.gz >> $LOGFILE 2>>$LOGFILE
+sudo tar -xzf v$VERSION.tar.gz -C /opt >> $LOGFILE 2>>$LOGFILE
+sudo ln -s /opt/netbox-$VERSION/ /opt/netbox
 
 # create netbox user
 
@@ -88,6 +89,7 @@ sudo sh -c "echo 'django-storages' >> /opt/netbox/local_requirements.txt"
 
 # . /etc/profile 
 . /etc/profile.d/python38.sh
+sed -i "s/python3/\/opt\/rh\/rh-python38\/root\/usr\/bin\/python3/1" /opt/netbox/upgrade.sh
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
