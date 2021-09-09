@@ -11,9 +11,8 @@
     },
     "virtualMachineName": {
       "type": "string",
-      "defaultValue": "NetboxVM",
       "metadata": {
-        "description": "Netbox Manchine Name"
+        "description": "Netbox NVA Manchine Name"
       }
     },
     "TempUsername": {
@@ -44,7 +43,7 @@
     },
     "OpnsenseSubnetName": {
       "type": "string",
-      "defaultValue": "Netbox-Subnet",
+      "defaultValue": "NetboxSubnet",
       "metadata": {
       "description": "Netbox Subnet Name"
         }
@@ -71,7 +70,7 @@
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/skapy/netboxazure/master/scripts/",
             "metadata": {
-      "description": "URI for Custom NetboxScript and Config"
+      "description": "URI for Custom Netbox Script and Config"
       }
     },
     "ShellScriptName": {
@@ -81,7 +80,7 @@
       "description": "Shell Script to be executed"
       }
     },
-    "BuildVersion": {
+    "NetboxBuildVersion": {
       "type": "string",
       "defaultValue": "3.0.1",
             "metadata": {
@@ -263,9 +262,9 @@
         "autoUpgradeMinorVersion": false,
         "settings": {
           "fileUris": [
-            "[concat(parameters('OPNScriptURI'),parameters('ShellScriptName'))]" 
+            "[concat(parameters('NetboxScriptURI'),parameters('ShellScriptName'))]" 
           ],
-          "commandToExecute": "[concat('sh ',parameters('ShellScriptName'),' ',parameters('BuildVersion'))]"
+          "commandToExecute": "[concat('sh ',parameters('ShellScriptName'),' ',parameters('NetboxBuildVersion'))]"
         }        
       }
     }
