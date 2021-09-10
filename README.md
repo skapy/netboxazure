@@ -29,7 +29,7 @@ Here is a visual representation of this design:
 
 Here are few considerations to deploy this solution correctly:
 
-- When you deploy this template, it will leave only TCP 22 listening to Internet while OPNsense gets installed.
+- When you deploy this template, it will leave only TCP 22 listening to Internet while Netbox gets installed.
 - To monitor the installation process during template deployment you can just probe the port 22 on Netbox VM public IP (psping or tcping).
 
 **Note**: It takes about 10 min to complete the whole process when VM is created and a new VM CustomScript is started to install Netbox.
