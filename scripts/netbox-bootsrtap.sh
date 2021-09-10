@@ -11,7 +11,11 @@ yum install pip3 -y  >> $LOGFILE 2>>$LOGFILE
 
 
 #installation
-yum install -y postgresql postgresql-server
+yum install postgresql96 postgresql96-server postgresql96-contrib postgresql96-libs -y >> $LOGFILE 2>>$LOGFILE 
+yum install postgresql96 postgresql96-server postgresql96-contrib postgresql96-libs -y >> $LOGFILE 2>>$LOGFILE
+
+
+# yum install -y postgresql postgresql-server
 
 systemctl enable postgresql
 
