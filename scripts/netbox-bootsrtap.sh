@@ -35,14 +35,16 @@ semanage fcontext -a -t postgresql_db_t "/opt/postgresql(/.*)?"
 chcon -Rt postgresql_db_t /opt/postgresql/data
 firewall-cmd --add-service=postgresql --pernament
 
-sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql-9.6.service
+sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/9.6\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql-9.6.service
 
 
 
 systemctl daemon-reload >> $LOGFILE 2>>$LOGFILE
 systemctl start postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
-sudo -u postgres initdb -D /opt/postgresql/data >> $LOGFILE 2>>$LOGFILE
+# sudo -u postgres initdb -D /opt/postgresql/data >> $LOGFILE 2>>$LOGFILE
 # postgresql-setup --initdb
+PGDATA=/opt/postgresql/data
+/usr/pgsql-9.6/bin/postgresql96-setup initdb
 systemctl restart postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
 sleep 5
 
