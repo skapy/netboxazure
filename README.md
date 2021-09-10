@@ -10,8 +10,8 @@ This template allows you to deploy an Netbox VM using the template installation 
 
 ## Initall design and implementation (Sep-2021)
 
-- Added all templates on main page for new VNET and existing VNETs for both two NICs and single NIC.
-- Added options to specific your own deployment script and configuration file.
+- Added template and script
+- Added options to specific your own deployment script and Netbox version.
 
 
 ## Overview
@@ -38,7 +38,6 @@ Here are few considerations to deploy this solution correctly:
 
 - First access can be done using <HTTPS://PublicIP.> Please ignore SSL/TLS errors and proceed.
 - Your first login is going to be username "admin" and password privided during template deployment (**PLEASE change your password right the way**).
-- To access SSH you can either deploy a Jumpbox VM on Trusted Subnet or create a Firewall Rule to allow SSH to Internet.
 
 ## Roadmap
 
