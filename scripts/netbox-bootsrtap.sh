@@ -11,13 +11,21 @@ yum install pip3 -y  >> $LOGFILE 2>>$LOGFILE
 
 
 #installation
+
+# Install the repository RPM:
+sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+# Install PostgreSQL:
+sudo yum install -y postgresql96-server lib-devel
+
 yum install postgresql96 postgresql96-server postgresql96-contrib postgresql96-libs -y >> $LOGFILE 2>>$LOGFILE 
 yum install postgresql96 postgresql96-server postgresql96-contrib postgresql96-libs -y >> $LOGFILE 2>>$LOGFILE
 
 
 # yum install -y postgresql postgresql-server
 
-systemctl enable postgresql
+# systemctl enable postgresql
+systemctl enable  postgresql-9.6
 
 mkdir /opt/postgresql
 mkdir /opt/postgresql/data
@@ -27,15 +35,15 @@ semanage fcontext -a -t postgresql_db_t "/opt/postgresql(/.*)?"
 chcon -Rt postgresql_db_t /opt/postgresql/data
 firewall-cmd --add-service=postgresql --pernament
 
-sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql.service
+sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql-9.6.service
 
 
 
 systemctl daemon-reload >> $LOGFILE 2>>$LOGFILE
-systemctl start postgresql.service >> $LOGFILE 2>>$LOGFILE
+systemctl start postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
 sudo -u postgres initdb -D /opt/postgresql/data >> $LOGFILE 2>>$LOGFILE
 # postgresql-setup --initdb
-systemctl restart postgresql.service >> $LOGFILE 2>>$LOGFILE
+systemctl restart postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
 sleep 5
 
 #Within the shell, enter the following commands to create the database and user (role), substituting your own value for the password:
