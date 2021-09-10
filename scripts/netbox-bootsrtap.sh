@@ -45,6 +45,13 @@ systemctl start postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
 # postgresql-setup --initdb
 PGDATA=/opt/postgresql/data
 /usr/pgsql-9.6/bin/postgresql96-setup initdb
+
+echo "local   all             all                                     md5" > /opt/postgresql/data/pg_hba.conf
+echo "host    all             all             127.0.0.1/32            md5" >> /opt/postgresql/data/pg_hba.conf
+echo "host    all             all             ::1/128                 md5" >> /opt/postgresql/data/pg_hba.conf
+
+
+
 systemctl restart postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
 sleep 5
 
