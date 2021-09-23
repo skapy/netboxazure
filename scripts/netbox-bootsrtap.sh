@@ -13,7 +13,8 @@ yum install pip3 -y  >> $LOGFILE 2>>$LOGFILE
 #installation
 
 # Install the repository RPM:
-sudo yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+wget https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+yum install -y -i pgdg-redhat-repo-latest.noarch.rpm
 
 # Install PostgreSQL:
 sudo yum install -y postgresql96-server lib-devel
@@ -46,11 +47,11 @@ systemctl start postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
 PGDATA=/opt/postgresql/data
 /usr/pgsql-9.6/bin/postgresql96-setup initdb
 
-echo "local   all             all                                     md5" > /opt/postgresql/data/pg_hba.conf
+echo "local   all             all                                     peer" > /opt/postgresql/data/pg_hba.conf
 echo "host    all             all             127.0.0.1/32            md5" >> /opt/postgresql/data/pg_hba.conf
 echo "host    all             all             ::1/128                 md5" >> /opt/postgresql/data/pg_hba.conf
 
-
+sleep 5 
 
 systemctl restart postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
 sleep 5
@@ -110,6 +111,16 @@ python3 -c "import sys; print('\n'.join(sys.path))" >> $LOGFILE 2>>$LOGFILE
 # sed -i "s/python3/\/opt\/rh\/rh-$PYTHONV\/root\/usr\/bin\/python3/1" /opt/netbox/upgrade.sh
 
 spleep 5
+
+
+wget https://raw.githubusercontent.com/skapy/opnazure/master/scripts/upgrade.sh.patch
+
+cd /opt/netbox/
+
+patch < upgrade.sh.patch
+
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
+
+
