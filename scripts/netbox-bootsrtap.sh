@@ -113,7 +113,7 @@ python3 -c "import sys; print('\n'.join(sys.path))" >> $LOGFILE 2>>$LOGFILE
 spleep 5
 
 
-wget https://raw.githubusercontent.com/skapy/opnazure/master/scripts/upgrade.sh.patch
+wget https://raw.githubusercontent.com/skapy/netboxazure/master/scripts/upgrade.sh.patch
 
 cd /opt/netbox/
 
