@@ -1,12 +1,13 @@
+#!/bin/bash
 # TODO: add custom script
 VERSION="$1"
 LOGFILE=/var/log/netbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 
-# install from SCLo repos
+# install Python 3
 yum install python3 -y >> $LOGFILE 2>>$LOGFILE
-
 yum install pip3 -y  >> $LOGFILE 2>>$LOGFILE
+yum install expect -y  >> $LOGFILE 2>>$LOGFILE
 
 
 
@@ -65,13 +66,13 @@ sudo -u postgres psql -c "CREATE DATABASE netbox;" >> $LOGFILE 2>>$LOGFILE
 sudo -u postgres psql -c "CREATE USER netbox WITH PASSWORD '"$DataBasePassword"';" >> $LOGFILE 2>>$LOGFILE
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE netbox TO netbox;" >> $LOGFILE 2>>$LOGFILE
 
-# install redis
+# install redis 5
 
 yum install -y epel-release >> $LOGFILE 2>>$LOGFILE
+yum --enablerepo=centos-sclo-rh -y install rh-redis5* >> $LOGFILE 2>>$LOGFILE
 
-yum install -y redis >> $LOGFILE 2>>$LOGFILE
-systemctl enable redis
-systemctl start redis
+systemctl enable rh-redis5-redis
+systemctl start rh-redis5-redis
 
 
 # install netbox
@@ -120,6 +121,29 @@ cd /opt/netbox/
 patch < upgrade.sh.patch
 
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
+
+# set netbox admin user password
+
+source /opt/netbox/venv/bin/activate
+
+/usr/bin/expect <(cat << EOF
+spawn python3 /opt/netbox/netbox/manage.py createsuperuser
+expect "Username:"
+send "netbox\r"
+expect "Email address:"
+send "netbox@example.com\r"
+expect "Password:"
+send "netbox\r"
+expect "Password (again):"
+send "netbox\r"
+interact
+EOF
+)
+
+cp /opt/netbox/contrib/gunicorn.py /opt/netbox/gunicorn.py
+
+systemctl daemon-reload
+systemctl start netbox netbox-rq
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
 
