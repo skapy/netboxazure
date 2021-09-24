@@ -123,19 +123,19 @@ sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
 
 source /opt/netbox/venv/bin/activate
 
-/usr/bin/expect <(cat << EOF
-spawn python3 /opt/netbox/netbox/manage.py createsuperuser
-expect "Username:"
-send "netbox\r"
-expect "Email address:"
-send "netbox@example.com\r"
-expect "Password:"
-send "netbox\r"
-expect "Password (again):"
-send "netbox\r"
-interact
-EOF
-)
+#/usr/bin/expect <(cat << EOF
+# spawn python3 /opt/netbox/netbox/manage.py createsuperuser
+# expect "Username:"
+#send "netbox\r"
+#expect "Email address:"
+#send "netbox@example.com\r"
+#expect "Password:"
+#send "netbox\r"
+#expect "Password (again):"
+#send "netbox\r"
+#interact
+#EOF
+#)
 
 
 cp -v /opt/netbox/contrib/*.service /etc/systemd/system/
@@ -149,25 +149,25 @@ yum install openssl -y >> $LOGFILE 2>>$LOGFILE
 
 mkdir /etc/ssl/private
 
-/usr/bin/expect <(cat << EOF
-spawn openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/netbox.key -out /etc/ssl/certs/netbox.crt
-expect "Country Name (2 letter code) [XX]:"
-send "US\r"
-expect "State or Province Name (full name) []:"
-send "Colorado\r"
-expect "Locality Name (eg, city) [Default City]:"
-send "Denver\r"
-expect "Organization Name (eg, company) [Default Company Ltd]:"
-send "CaciLabs\r"
-expect "Organizational Unit Name (eg, section) []:"
-send "IT\r"
-expect "Common Name (eg, your name or your server's hostname) []:"
-send "netbox.example.info\r"
-expect "Email Address []:"
-send "admin@netbox.example.info\r"
-interact
-EOF
-)
+#/usr/bin/expect <(cat << EOF
+#spawn openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/netbox.key -out /etc/ssl/certs/netbox.crt
+#expect "Country Name (2 letter code) [XX]:"
+#send "US\r"
+#expect "State or Province Name (full name) []:"
+#send "Colorado\r"
+#expect "Locality Name (eg, city) [Default City]:"
+#send "Denver\r"
+#expect "Organization Name (eg, company) [Default Company Ltd]:"
+#send "CaciLabs\r"
+#expect "Organizational Unit Name (eg, section) []:"
+#send "IT\r"
+#expect "Common Name (eg, your name or your server's hostname) []:"
+#send "netbox.example.info\r"
+#expect "Email Address []:"
+#send "admin@netbox.example.info\r"
+#interact
+#EOF
+#)
 
 # instal nginx
 
