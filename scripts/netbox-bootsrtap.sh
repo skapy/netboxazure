@@ -32,7 +32,10 @@ chown -R postgres:postgres /opt/postgresql
 # selinux upddate for new postgresql location 
 semanage fcontext -a -t postgresql_db_t "/opt/postgresql(/.*)?"
 chcon -Rt postgresql_db_t /opt/postgresql/data
-firewall-cmd --add-service=postgresql --pernament
+
+systemctl restart firewalld
+firewall-cmd --add-service=postgresql --permanent
+firewall-cmd --reload
 
 sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/9.6\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql-9.6.service
 
@@ -179,6 +182,9 @@ setsebool -P httpd_can_network_connect 1
 yum install -y nginx
 
 cp /opt/netbox/contrib/nginx.conf /etc/nginx/conf.d/
+
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload
 
 systemctl enable nginx
 systemctl restart nginx
