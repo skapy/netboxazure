@@ -137,9 +137,53 @@ interact
 EOF
 )
 
+
+cp -v /opt/netbox/contrib/*.service /etc/systemd/system/
+
 cp /opt/netbox/contrib/gunicorn.py /opt/netbox/gunicorn.py
 
+
+# create selfsign cert
+
+yum install openssl -y >> $LOGFILE 2>>$LOGFILE
+
+mkdir /etc/ssl/private
+
+/usr/bin/expect <(cat << EOF
+spawn openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/netbox.key -out /etc/ssl/certs/netbox.crt
+expect "Country Name (2 letter code) [XX]:"
+send "US\r"
+expect "State or Province Name (full name) []:"
+send "Colorado\r"
+expect "Locality Name (eg, city) [Default City]:"
+send "Denver\r"
+expect "Organization Name (eg, company) [Default Company Ltd]:"
+send "CaciLabs\r"
+expect "Organizational Unit Name (eg, section) []:"
+send "IT\r"
+expect "Common Name (eg, your name or your server's hostname) []:"
+send "netbox.example.info\r"
+expect "Email Address []:"
+send "admin@netbox.example.info\r"
+interact
+EOF
+)
+
+# instal nginx
+
+setsebool -P httpd_can_network_connect 1
+
+yum install -y nginx
+
+cp /opt/netbox/contrib/nginx.conf /etc/nginx/conf.d/
+
+systemctl enable nginx
+systemctl restart nginx
+
+# start netbox
+
 systemctl daemon-reload
+systemctl enable netbox netbox-rq
 systemctl start netbox netbox-rq
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
