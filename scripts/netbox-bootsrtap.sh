@@ -112,10 +112,11 @@ spleep 5
 
 
 wget https://raw.githubusercontent.com/skapy/netboxazure/master/scripts/upgrade.sh.patch
+mv upgrade.sh.patch /opt/netbox/
 
 cd /opt/netbox/
 
-patch < upgrade.sh.patch
+patch < upgrade.sh.patch >> $LOGFILE 2>>$LOGFILE
 
 sudo /opt/netbox/upgrade.sh >> $LOGFILE 2>>$LOGFILE
 
@@ -143,7 +144,7 @@ cp -v /opt/netbox/contrib/*.service /etc/systemd/system/
 cp /opt/netbox/contrib/gunicorn.py /opt/netbox/gunicorn.py
 
 
-# create selfsign cert
+# create selfsigned cert
 
 yum install openssl -y >> $LOGFILE 2>>$LOGFILE
 
@@ -169,7 +170,9 @@ mkdir /etc/ssl/private
 #EOF
 #)
 
-# instal nginx
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/netbox.key -out /etc/ssl/certs/netbox.crt -subj "/C=US/ST=Colorado/L=Denver/O=CaciLabs/OU=IT Department/CN=netbox.example.com"
+
+# instalil nginx
 
 setsebool -P httpd_can_network_connect 1
 
