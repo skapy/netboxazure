@@ -1,6 +1,7 @@
 #!/bin/bash
-# TODO: add custom script
-VERSION="$1"
+# TODO: check selinux 
+# VERSION="$1"
+VERSION="2.11.9"
 LOGFILE=/var/log/netbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 
@@ -18,13 +19,9 @@ wget https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-red
 yum install -y -i pgdg-redhat-repo-latest.noarch.rpm
 
 # Install PostgreSQL:
-sudo yum install -y postgresql96-server lib-devel
+yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
-yum install postgresql96 postgresql96-server postgresql96-contrib postgresql96-libs -y >> $LOGFILE 2>>$LOGFILE 
 yum install postgresql96 postgresql96-server postgresql96-contrib postgresql96-libs -y >> $LOGFILE 2>>$LOGFILE
-
-
-# yum install -y postgresql postgresql-server
 
 # systemctl enable postgresql
 systemctl enable  postgresql-9.6
