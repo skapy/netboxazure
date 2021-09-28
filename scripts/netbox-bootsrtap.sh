@@ -1,7 +1,12 @@
 #!/bin/bash
 # TODO: check selinux 
-# VERSION="$1"
-VERSION="2.11.9"
+
+VERSION="$1"
+if [ -z "$VERSION" ]
+then
+      VERSION="2.11.9"
+fi
+
 LOGFILE=/var/log/netbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 
@@ -21,10 +26,10 @@ yum install -y -i pgdg-redhat-repo-latest.noarch.rpm
 # Install PostgreSQL:
 yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
-yum install postgresql96 postgresql96-server postgresql96-contrib postgresql96-libs -y >> $LOGFILE 2>>$LOGFILE
+yum install postgresql13 postgresql13-server postgresql13-contrib postgresql13-libs -y >> $LOGFILE 2>>$LOGFILE
 
 # systemctl enable postgresql
-systemctl enable  postgresql-9.6
+systemctl enable  postgresql-13
 
 mkdir /opt/postgresql
 mkdir /opt/postgresql/data
@@ -37,16 +42,16 @@ systemctl restart firewalld
 firewall-cmd --add-service=postgresql --permanent
 firewall-cmd --reload
 
-sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/9.6\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql-9.6.service
+sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/13\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql-13.service
 
 
 
 systemctl daemon-reload >> $LOGFILE 2>>$LOGFILE
-systemctl start postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
+systemctl start postgresql-13 >> $LOGFILE 2>>$LOGFILE
 # sudo -u postgres initdb -D /opt/postgresql/data >> $LOGFILE 2>>$LOGFILE
 # postgresql-setup --initdb
 PGDATA=/opt/postgresql/data
-/usr/pgsql-9.6/bin/postgresql96-setup initdb
+/usr/pgsql-13/bin/postgresql-13-setup initdb
 
 echo "local   all             all                                     peer" > /opt/postgresql/data/pg_hba.conf
 echo "host    all             all             127.0.0.1/32            md5" >> /opt/postgresql/data/pg_hba.conf
@@ -54,7 +59,7 @@ echo "host    all             all             ::1/128                 md5" >> /o
 
 sleep 5 
 
-systemctl restart postgresql-9.6 >> $LOGFILE 2>>$LOGFILE
+systemctl restart postgresql-13 >> $LOGFILE 2>>$LOGFILE
 sleep 5
 
 #Within the shell, enter the following commands to create the database and user (role), substituting your own value for the password:
