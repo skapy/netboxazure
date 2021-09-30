@@ -7,6 +7,8 @@ then
       VERSION="2.11.9"
 fi
 
+yum install -y firewalld
+
 LOGFILE=/var/log/netbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
 
