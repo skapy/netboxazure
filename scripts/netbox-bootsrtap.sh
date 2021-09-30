@@ -76,6 +76,7 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE netbox TO netbox;" >>
 # install redis 5
 
 yum install -y epel-release >> $LOGFILE 2>>$LOGFILE
+yum install centos-release-scl -y 
 yum --enablerepo=centos-sclo-rh -y install rh-redis5* >> $LOGFILE 2>>$LOGFILE
 
 systemctl enable rh-redis5-redis
