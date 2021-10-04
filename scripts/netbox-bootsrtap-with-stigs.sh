@@ -220,19 +220,18 @@ oscap xccdf generate fix --fix-type ansible --profile xccdf_org.ssgproject.conte
 
 # Create localhost inventory file 
 
-echo "\[nodes\]" >
+echo "[nodes]" > inventory.ini
 echo "localnode ansible_user=root ansible_host=127.0.0.1 ansible_connection=local" >> inventory.ini
 
 # Execute Ansible Script
 
 echo "-------- Execute Ansible Script --------------" >> $LOGFILE
 
-ansible-playbook -i inventory.ini stig-playbook-result.yml >> $LOGFILE 2>>$LOGFILE
+ansible-playbook -i inventory.ini stig-rhel7-role.yml >> $LOGFILE 2>>$LOGFILE
 
 # Generate a Report
 
-oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig-rhel7-disa --report /tmp/report.html /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
-
+oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_rhelh-stig --report /tmp/report.html /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
 
