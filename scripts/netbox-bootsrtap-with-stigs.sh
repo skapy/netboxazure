@@ -28,7 +28,7 @@ yum install -y -i pgdg-redhat-repo-latest.noarch.rpm
 # Install PostgreSQL:
 yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
-yum install postgresql13 postgresql13-server postgresql13-contrib postgresql13-libs -y >> $LOGFILE 2>>$LOGFILE
+yum install postgresql13 postgresql13-server postgresql13-contrib postgresql13-libs pgaudit15_13 pgauditlogtofile_13 -y >> $LOGFILE 2>>$LOGFILE
 
 # systemctl enable postgresql
 systemctl enable  postgresql-13
@@ -46,6 +46,10 @@ firewall-cmd --reload
 
 sed -i 's/Environment=PGDATA=\/var\/lib\/pgsql\/13\/data/Environment=PGDATA=\/opt\/postgresql\/data/1' /usr/lib/systemd/system/postgresql-13.service
 
+sed -i 's/PGDATA=\/var\/lib\/pgsql\/13\/data/PGDATA=\/opt\/postgresql\/data/1' /var/lib/pgsql/.bash_profile
+
+
+
 
 
 systemctl daemon-reload >> $LOGFILE 2>>$LOGFILE
@@ -55,9 +59,16 @@ systemctl start postgresql-13 >> $LOGFILE 2>>$LOGFILE
 PGDATA=/opt/postgresql/data
 /usr/pgsql-13/bin/postgresql-13-setup initdb
 
-echo "local   all             all                                     peer" > /opt/postgresql/data/pg_hba.conf
-echo "host    all             all             127.0.0.1/32            scram-sha-256" >> /opt/postgresql/data/pg_hba.conf
-echo "host    all             all             ::1/128                 scram-sha-256" >> /opt/postgresql/data/pg_hba.conf
+echo "local   all             all                                     peer" > $PGDATA/pg_hba.conf
+echo "host    all             all             127.0.0.1/32            scram-sha-256" >> $PGDATA/pg_hba.conf
+echo "host    all             all             ::1/128                 scram-sha-256" >> $PGDATA/pg_hba.conf
+
+# F-79285r3_fix
+echo "pgaudit.log_catalog=\'on\'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log_level=\'log\'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log_parameter=\'on\'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log_statement_once=\'off\'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log=\'all, -misc\'" >> $PGDATA/postgresql.conf
 
 sleep 5 
 
@@ -106,7 +117,7 @@ sed -i "s/SECRET_KEY = ''/SECRET_KEY = '"`< /dev/urandom tr -dc _A-Z-a-z-0-9 | h
 sudo chown --recursive netbox /opt/netbox/netbox/media/
 
 
-# install
+# 
 
 sudo sh -c "echo 'napalm' >> /opt/netbox/local_requirements.txt"
 # sudo sh -c "echo 'django-storages' >> /opt/netbox/local_requirements.txt"
@@ -161,26 +172,6 @@ yum install openssl -y >> $LOGFILE 2>>$LOGFILE
 
 mkdir /etc/ssl/private
 
-#/usr/bin/expect <(cat << EOF
-#spawn openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/netbox.key -out /etc/ssl/certs/netbox.crt
-#expect "Country Name (2 letter code) [XX]:"
-#send "US\r"
-#expect "State or Province Name (full name) []:"
-#send "Colorado\r"
-#expect "Locality Name (eg, city) [Default City]:"
-#send "Denver\r"
-#expect "Organization Name (eg, company) [Default Company Ltd]:"
-#send "CaciLabs\r"
-#expect "Organizational Unit Name (eg, section) []:"
-#send "IT\r"
-#expect "Common Name (eg, your name or your server's hostname) []:"
-#send "netbox.example.info\r"
-#expect "Email Address []:"
-#send "admin@netbox.example.info\r"
-#interact
-#EOF
-#)
-
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/netbox.key -out /etc/ssl/certs/netbox.crt -subj "/C=US/ST=Colorado/L=Denver/O=CaciLabs/OU=IT Department/CN=netbox.example.com"
 
 # instalil nginx
@@ -227,7 +218,7 @@ echo "localnode ansible_user=root ansible_host=127.0.0.1 ansible_connection=loca
 
 echo "-------- Execute Ansible Script --------------" >> $LOGFILE
 
-ansible-playbook -i inventory.ini stig-rhel7-role.yml >> $LOGFILE 2>>$LOGFILE
+# ansible-playbook -i inventory.ini stig-rhel7-role.yml >> $LOGFILE 2>>$LOGFILE
 
 # Generate a Report
 
