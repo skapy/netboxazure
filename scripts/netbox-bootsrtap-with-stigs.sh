@@ -64,11 +64,11 @@ echo "host    all             all             127.0.0.1/32            scram-sha-
 echo "host    all             all             ::1/128                 scram-sha-256" >> $PGDATA/pg_hba.conf
 
 # F-79285r3_fix
-echo "pgaudit.log_catalog=\'on\'" >> $PGDATA/postgresql.conf
-echo "pgaudit.log_level=\'log\'" >> $PGDATA/postgresql.conf
-echo "pgaudit.log_parameter=\'on\'" >> $PGDATA/postgresql.conf
-echo "pgaudit.log_statement_once=\'off\'" >> $PGDATA/postgresql.conf
-echo "pgaudit.log=\'all, -misc\'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log_catalog='on'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log_level='log'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log_parameter='on'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log_statement_once='off'" >> $PGDATA/postgresql.conf
+echo "pgaudit.log='all, -misc'" >> $PGDATA/postgresql.conf
 
 sleep 5 
 
