@@ -7,7 +7,7 @@ then
       VERSION="2.11.9"
 fi
 
-yum install -y firewalld wget
+yum install -y firewalld wget unzip
 
 LOGFILE=/var/log/netbox_install.log >> $LOGFILE 2>>$LOGFILE
 echo " ** Start script "`date` >> $LOGFILE 2>>$LOGFILE
@@ -220,9 +220,18 @@ echo "-------- Execute Ansible Script --------------" >> $LOGFILE
 
 # ansible-playbook -i inventory.ini stig-rhel7-role.yml >> $LOGFILE 2>>$LOGFILE
 
-# Generate a Report
+# Generate a linux report
 
 oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_rhelh-stig --report /tmp/report.html /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
+
+# Generate a PostgreSQL report
+
+wget https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R2_STIG.zip
+
+unzip U_PGS_SQL_9-x_V2R2_STIG.zip
+
+oscap xccdf eval --profile MAC-1_Classified --report /tmp/postgresql_report.html U_PGS_SQL_9-x_V2R2_Manual_STIG/U_PGS_SQL_9-x_STIG_V2R2_Manual-xccdf.xml
+
 
 echo " ** End script "`date` >> $LOGFILE 2>>$LOGFILE
 
