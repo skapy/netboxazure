@@ -22,11 +22,11 @@ yum install expect -y  >> $LOGFILE 2>>$LOGFILE
 #installation
 
 # Install the repository RPM:
-wget https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-yum install -y -i pgdg-redhat-repo-latest.noarch.rpm
+# wget https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+# yum install -y -i pgdg-redhat-repo-latest.noarch.rpm
 
 # Install PostgreSQL:
-yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+yum install -y --nogpgcheck https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
 yum install postgresql13 postgresql13-server postgresql13-contrib postgresql13-libs pgaudit15_13 pgauditlogtofile_13 -y >> $LOGFILE 2>>$LOGFILE
 
