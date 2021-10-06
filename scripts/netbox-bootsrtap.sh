@@ -190,6 +190,9 @@ setsebool -P httpd_can_network_connect 1
 yum install -y nginx
 
 cp /opt/netbox/contrib/nginx.conf /etc/nginx/conf.d/
+sed -i 's/listen       80;/# listen       80;/1' /etc/nginx/nginx.conf
+sed -i 's/listen       [::]:80;/# listen       [::]:80;/1' /etc/nginx/nginx.conf
+
 
 firewall-cmd --permanent --zone=public --add-service=https
 firewall-cmd --reload
