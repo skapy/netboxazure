@@ -59,7 +59,7 @@ systemctl start postgresql-13 >> $LOGFILE 2>>$LOGFILE
 PGDATA=/opt/postgresql/data
 /usr/pgsql-13/bin/postgresql-13-setup initdb
 
-echo "local   all             all                                     peer" > $PGDATA/pg_hba.conf
+echo "local   all             all                                     scram-sha-256" > $PGDATA/pg_hba.conf
 echo "host    all             all             127.0.0.1/32            scram-sha-256" >> $PGDATA/pg_hba.conf
 echo "host    all             all             ::1/128                 scram-sha-256" >> $PGDATA/pg_hba.conf
 
