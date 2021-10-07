@@ -57,7 +57,7 @@ systemctl start postgresql-13 >> $LOGFILE 2>>$LOGFILE
 # sudo -u postgres initdb -D /opt/postgresql/data >> $LOGFILE 2>>$LOGFILE
 # postgresql-setup --initdb
 PGDATA=/opt/postgresql/data
-/usr/pgsql-13/bin/postgresql-13-setup initdb
+/usr/bin/postgresql-13-setup initdb
 
 echo "local   all             all                                     scram-sha-256" > $PGDATA/pg_hba.conf
 echo "host    all             all             127.0.0.1/32            scram-sha-256" >> $PGDATA/pg_hba.conf
