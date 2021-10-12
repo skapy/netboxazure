@@ -225,6 +225,7 @@ echo "-------- Execute Ansible Script --------------" >> $LOGFILE
 # Generate a linux report
 
 oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_rhelh-stig --report /tmp/report.html /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
+# oscap xccdf eval --remediate --profile xccdf_org.ssgproject.content_profile_rhelh-stig --report /tmp/report.html /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml
 
 # Generate a PostgreSQL report
 
