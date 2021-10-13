@@ -59,6 +59,13 @@ systemctl start postgresql-13 >> $LOGFILE 2>>$LOGFILE
 PGDATA=/opt/postgresql/data
 /usr/bin/postgresql-13-setup initdb
 
+# Database Passowrd:
+DataBasePassword=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
+
+sudo -u postgres psql -c "CREATE DATABASE netbox;" >> $LOGFILE 2>>$LOGFILE
+sudo -u postgres psql -c "CREATE USER netbox WITH PASSWORD '"$DataBasePassword"';" >> $LOGFILE 2>>$LOGFILE
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE netbox TO netbox;" >> $LOGFILE 2>>$LOGFILE
+
 echo "local   all             all                                     scram-sha-256" > $PGDATA/pg_hba.conf
 echo "host    all             all             127.0.0.1/32            scram-sha-256" >> $PGDATA/pg_hba.conf
 echo "host    all             all             ::1/128                 scram-sha-256" >> $PGDATA/pg_hba.conf
@@ -76,13 +83,6 @@ systemctl restart postgresql-13 >> $LOGFILE 2>>$LOGFILE
 sleep 5
 
 #Within the shell, enter the following commands to create the database and user (role), substituting your own value for the password:
-# Database Passowrd:
-DataBasePassword=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
-
-echo $
-sudo -u postgres psql -c "CREATE DATABASE netbox;" >> $LOGFILE 2>>$LOGFILE
-sudo -u postgres psql -c "CREATE USER netbox WITH PASSWORD '"$DataBasePassword"';" >> $LOGFILE 2>>$LOGFILE
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE netbox TO netbox;" >> $LOGFILE 2>>$LOGFILE
 
 # install redis 5
 
