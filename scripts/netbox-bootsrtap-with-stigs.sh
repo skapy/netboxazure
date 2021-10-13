@@ -66,9 +66,9 @@ sudo -u postgres psql -c "CREATE DATABASE netbox;" >> $LOGFILE 2>>$LOGFILE
 sudo -u postgres psql -c "CREATE USER netbox WITH PASSWORD '"$DataBasePassword"';" >> $LOGFILE 2>>$LOGFILE
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE netbox TO netbox;" >> $LOGFILE 2>>$LOGFILE
 
-echo "local   all             all                                     scram-sha-256" > $PGDATA/pg_hba.conf
-echo "host    all             all             127.0.0.1/32            scram-sha-256" >> $PGDATA/pg_hba.conf
-echo "host    all             all             ::1/128                 scram-sha-256" >> $PGDATA/pg_hba.conf
+# echo "local   all             all                                     scram-sha-256" > $PGDATA/pg_hba.conf
+# echo "host    all             all             127.0.0.1/32            scram-sha-256" >> $PGDATA/pg_hba.conf
+# echo "host    all             all             ::1/128                 scram-sha-256" >> $PGDATA/pg_hba.conf
 
 # F-79285r3_fix
 echo "pgaudit.log_catalog='on'" >> $PGDATA/postgresql.conf
