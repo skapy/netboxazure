@@ -207,11 +207,13 @@ yum install -y ansible
 
 yum install -y openscap scap-security-guide 
 
-# Create an Ansible Script
-scp /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml
-sed -i 's/redhat:enterprise_linux:7/centos:centos:7/g' /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml
+mkdir /root/stigs
 
-oscap xccdf generate fix --fix-type ansible --profile xccdf_org.ssgproject.content_profile_rhelh-stig --output stig-rhel7-role.yml --fetch-remote-resources /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml
+# Create an Ansible Script
+scp /usr/share/xml/scap/ssg/content/ssg-rhel7-ds.xml /root/stigs/ssg-centos7-ds.xml
+sed -i 's/redhat:enterprise_linux:7/centos:centos:7/g' /root/stigs/ssg-centos7-ds.xml
+
+oscap xccdf generate fix --fix-type ansible --profile xccdf_org.ssgproject.content_profile_rhelh-stig --output stig-rhel7-role.yml --fetch-remote-resources /root/stigs/ssg-centos7-ds.xml
 
 # Create localhost inventory file 
 
@@ -226,7 +228,7 @@ echo "-------- Execute Ansible Script --------------" >> $LOGFILE
 
 # Generate a linux report
 
-oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_rhelh-stig --report /tmp/report.html /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml
+oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_rhelh-stig --report /tmp/report.html /root/stigs/ssg-centos7-ds.xml
 # oscap xccdf eval --remediate --profile xccdf_org.ssgproject.content_profile_rhelh-stig --report /tmp/report.html /usr/share/xml/scap/ssg/content/ssg-centos7-ds.xml
 
 # Generate a PostgreSQL report
